@@ -13,9 +13,10 @@ import com.badlogic.gdx.utils.IntFloatMap;
 
 public class Player extends Sprite {
     private Texture playerImage;
-    private Rectangle player;
+    public static Rectangle player;
     private OrthographicCamera camera;
-    private boolean jumping;
+    private boolean jumping = false;
+    private boolean backToGround = false;
 
 
     public void createPlayer(){
@@ -47,37 +48,40 @@ public class Player extends Sprite {
             camera.unproject(touchPos);
             player.x = touchPos.x - 50 / 2;
         }*/
-
-
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            for (int i = 0; i < 20; i++ ) {
-                player.y += 80 * Gdx.graphics.getDeltaTime();
-                System.out.println("going up");
-            }
-
-            for (int j = 20; j >= 0; j-- ) {
-                player.y -= 80 * Gdx.graphics.getDeltaTime();
-                System.out.println("going down");
-            }
-
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            player.x += 250 * Gdx.graphics.getDeltaTime();
         }
 
-        /*if(!jumping && player.y != 320) {
-            player.y -= 10 * Gdx.graphics.getDeltaTime();
-            //go down to 320
-        }*/
-        //if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) player.y -= 200 * Gdx.graphics.getDeltaTime();
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            player.x -= 250 * Gdx.graphics.getDeltaTime();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            if(!backToGround) {
+                jumping = true;
+            }
+        }
+        if(jumping) {
+            player.y += 10 * Gdx.graphics.getDeltaTime()*50;
 
-        //JumpTry
+            if (player.y >= 500) {
+                jumping = false;
+                backToGround = true;
+            }
+        }
+        if (backToGround == true) {
+            player.y -= 10 * Gdx.graphics.getDeltaTime()*50;
+            if (player.y <= 320) {
+                backToGround = false;
+                player.y = 320;
+            }
+        }
 
         if(player.y > 580 - 50/2-30) player.y = 580 - 50/2-30;
         if(player.y < 290 - 50/2+10) player.y = 290 - 50/2+10;
-
+        if(player.x > 800-50/2-45) player.x =800-50/2-45;
+        if(player.x < 25) player.x = 25;
     }
 
-    public void jump() {
-
-    }
 
     public void disposePlayer(){
         playerImage.dispose();

@@ -16,12 +16,15 @@ public class InHerHands extends ApplicationAdapter {
 	private Player player1;
 	private PlayerController playerController;
 	private Music backgroundMusic;
+	private Bullet bullet;
 
 
 	public InHerHands() {
 		map = new Map();
 		player1 = new Player();
 		playerController = new PlayerController();
+		bullet = new Bullet();
+
 	}
 
 	@Override
@@ -30,6 +33,7 @@ public class InHerHands extends ApplicationAdapter {
 		map.createMap();
 		player1.createPlayer();
 		playerController.createPlayerController();
+		bullet.createBullet();
 	}
 
 	@Override
@@ -37,6 +41,7 @@ public class InHerHands extends ApplicationAdapter {
 		map.renderMap(batch);
 		player1.renderPlayer(batch);
 		playerController.renderPlayerController(batch);
+		bullet.renderBullet(batch);
 	}
 	
 	@Override
@@ -44,5 +49,6 @@ public class InHerHands extends ApplicationAdapter {
 		map.disposeMap(batch);
 		player1.disposePlayer();
 		playerController.disposePlayer();
+		bullet.disposeBullet();
 	}
 }
