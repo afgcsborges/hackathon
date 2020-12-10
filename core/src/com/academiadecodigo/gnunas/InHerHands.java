@@ -1,33 +1,48 @@
 package com.academiadecodigo.gnunas;
 
+import com.academiadecodigo.gnunas.map.Map;
+import com.academiadecodigo.gnunas.player.Player;
+import com.academiadecodigo.gnunas.player.PlayerController;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class InHerHands extends ApplicationAdapter {
+	private Map map;
 	SpriteBatch batch;
-	Texture img;
-	
+	private Player player1;
+	private PlayerController playerController;
+	private Music backgroundMusic;
+
+
+	public InHerHands() {
+		map = new Map();
+		player1 = new Player();
+		playerController = new PlayerController();
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		map.createMap();
+		player1.createPlayer();
+		playerController.createPlayerController();
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		map.renderMap(batch);
+		player1.renderPlayer(batch);
+		playerController.renderPlayerController(batch);
 	}
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+		map.disposeMap(batch);
+		player1.disposePlayer();
+		playerController.disposePlayer();
 	}
 }
