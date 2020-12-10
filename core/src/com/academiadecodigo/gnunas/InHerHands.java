@@ -1,5 +1,9 @@
 package com.academiadecodigo.gnunas;
 
+import com.academiadecodigo.gnunas.screens.MenuScreen;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.academiadecodigo.gnunas.map.Map;
 import com.academiadecodigo.gnunas.player.Player;
 import com.academiadecodigo.gnunas.player.PlayerController;
@@ -10,45 +14,39 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class InHerHands extends ApplicationAdapter {
+public class InHerHands extends Game {
+
 	private Map map;
-	SpriteBatch batch;
 	private Player player1;
 	private PlayerController playerController;
 	private Music backgroundMusic;
 	private Bullet bullet;
+    SpriteBatch batch;
+    Texture img;
+    private int state = 0;
 
+    private MenuScreen menuScreen;
 
-	public InHerHands() {
-		map = new Map();
-		player1 = new Player();
-		playerController = new PlayerController();
-		bullet = new Bullet();
+    @Override
+    public void create() {
+        setScreen(new MenuScreen(this));
 
-	}
+    }
 
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		map.createMap();
-		player1.createPlayer();
-		playerController.createPlayerController();
-		bullet.createBullet();
-	}
-
-	@Override
-	public void render () {
-		map.renderMap(batch);
-		player1.renderPlayer(batch);
-		playerController.renderPlayerController(batch);
-		bullet.renderBullet(batch);
-	}
-	
-	@Override
-	public void dispose () {
+    @Override
+    public void dispose() {
+        batch.dispose();
+        img.dispose();
 		map.disposeMap(batch);
 		player1.disposePlayer();
 		playerController.disposePlayer();
 		bullet.disposeBullet();
-	}
+    }
+
+    public enum GameState {
+        MAIN_MENU,
+        INSTRUCTIONS,
+        PLAYING,
+        GAME_OVER
+    }
 }
