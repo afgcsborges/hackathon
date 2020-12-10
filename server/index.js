@@ -1,4 +1,4 @@
-var app = require('express')();
+/*var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
@@ -11,4 +11,15 @@ io.on('connection', function(socket){
     socket.on('disconnect', function(){
         console.log("Player disconnected");
     });
+});
+*/
+
+const WebSocket = require('ws');
+
+const wss = new WebSocket.Server({ port: 8081 });
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
 });
