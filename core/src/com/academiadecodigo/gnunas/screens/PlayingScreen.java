@@ -1,7 +1,6 @@
 package com.academiadecodigo.gnunas.screens;
 
-import obstacles.Barrel;
-import obstacles.Bullet;
+import obstacles.*;
 import com.academiadecodigo.gnunas.InHerHands;
 import com.academiadecodigo.gnunas.player.Player;
 import com.academiadecodigo.gnunas.player.PlayerController;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Rectangle;
-import obstacles.Wall;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,14 +42,13 @@ public class PlayingScreen extends ScreenAdapter {
     private PlayerController playerController;
     //Game Objects
     private List<Rectangle> bullets;
-    private List<Rectangle> brickWalls;
-    private List<Rectangle> barrels;
+    private List<Obstacle> obstacles;
 
     private HerDecision decision = HerDecision.NONE;
     private Rectangle buttonDuck,buttonShoot,buttonJump;
 
     private int obstacleCounter = 0;
-    private int difficulty = 15;
+    private int difficulty = 10;
 
     private List<Integer> used;
 
@@ -61,8 +58,7 @@ public class PlayingScreen extends ScreenAdapter {
         this.game = game;
         batch = new SpriteBatch();
         bullets = new LinkedList<Rectangle>();
-        barrels = new LinkedList<>();
-        brickWalls = new LinkedList<>();
+        obstacles = new LinkedList<>();
         used = new LinkedList<>();
 
 
@@ -180,8 +176,7 @@ public class PlayingScreen extends ScreenAdapter {
         batch.end();
         renderPlayers();
         renderBullets();
-        renderBarrels();
-        renderWalls();
+        renderObstacles();
         checkDecision();
 
         batch.begin();
@@ -217,27 +212,26 @@ public class PlayingScreen extends ScreenAdapter {
 
         fontBit.draw(batch, str, 572, 123);
 
-        //Launching walls
-        if(obstacleCounter == 0 || (seconds % (difficulty * obstacleCounter) == 0 && !used.contains(seconds))){
-            used.add(seconds);
+        int levelTime =seconds+(minutes*60);
+
+
+        //TODO: fix this crap
+        //Launching obstacles
+        if(obstacleCounter == 0 || levelTime % (difficulty * obstacleCounter) == 0 && !used.contains(levelTime)){
+            used.add(levelTime);
             obstacleCounter++;
             difficulty--;
-            Wall wall = new Wall();
-            brickWalls.add(wall.create(801, 310));
+            if (difficulty < 0) {
+                difficulty = 0;
+            }
+
+            Obstacle obstacle = ObstacleFactory.createObstacle();
+            obstacle.create();
+
+            obstacles.add(obstacle);
+            System.out.println("Added obstacle");
             System.out.println("wall created");
         }
-
-        //Launching barrels
-        if(obstacleCounter == 0 || (seconds % (difficulty * obstacleCounter) == 0 && !used.contains(seconds))){
-            used.add(seconds);
-            obstacleCounter++;
-            difficulty--;
-            Barrel barrel = new Barrel();
-            barrels.add(barrel.create(801, 310));
-            System.out.println("barrel created");
-        }
-
-
     }
 
 
@@ -265,23 +259,13 @@ public class PlayingScreen extends ScreenAdapter {
         batch.end();
     }
 
-    public void renderBarrels(){
-        batch.begin();
-
-        for (Rectangle barrel : barrels) {
-            batch.draw(barrelImage, barrel.x, barrel.y);
-            barrel.x -= 100 * Gdx.graphics.getDeltaTime();
-        }
-
-        batch.end();
-    }
-    public void renderWalls() {
+    public void renderObstacles() {
 
         batch.begin();
 
-        for (Rectangle wall : brickWalls) {
-            batch.draw(wallImage, wall.x, wall.y);
-            wall.x -= BACKGROUND_MOVE_SPEED * Gdx.graphics.getDeltaTime();
+        for (Obstacle obstacle : obstacles) {
+            batch.draw(obstacle.getImage(), obstacle.getRectangle().x, obstacle.getRectangle().y);
+            obstacle.getRectangle().x -= BACKGROUND_MOVE_SPEED * Gdx.graphics.getDeltaTime();
         }
 
         batch.end();

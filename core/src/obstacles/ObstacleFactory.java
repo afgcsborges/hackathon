@@ -4,28 +4,23 @@ import java.util.List;
 
 public class ObstacleFactory {
 
-   /*public Obstacle getObstacle(ObstacleType type){
+    public static Obstacle createObstacle(){
 
-       /*Obstacle obstacle = null;
-       switch (type){
-           case WALL:
-           obstacle = new Wall();
-               break;
-           case BARREL:
-              obstacle = new Barrel();
-               barrels.add(barrel.create(801, 310));
-               System.out.println("barrel created");
-               break;
-           case MONSTER:
-               System.out.println("monster");
-               break;
-       }
-       return obstacle;
-   }
+        int random = (int)(Math.random() * 3);
+        switch (random) {
+            case 0:
+                return new Wall();
+            case 1:
+                return new Barrel();
+            case 2:
+                return new Monster();
+        }
+        return null;
+    };
 
     public enum ObstacleType{
         WALL,
         BARREL,
         MONSTER,
-    }*/
+    }
 }

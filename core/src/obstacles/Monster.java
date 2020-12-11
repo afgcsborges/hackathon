@@ -7,28 +7,27 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.LinkedList;
 
-public class Barrel implements Obstacle{
+public class Monster implements Obstacle {
 
-    Texture barrelImage;
-    Rectangle barrel;
+    Texture monsterImage;
+    Rectangle monster;
 
     public Rectangle create(){
 
-        barrel = new Rectangle();
+        monster = new Rectangle();
 
-        barrel.x = 801;
-        barrel.y= 310;
-        barrel.width = 52;
-        barrel.height = 60;
-
+        monster.x = 801;
+        monster.y= 310;
+        monster.width = 52;
+        monster.height = 60;
         insertImages();
 
-        return barrel;
+        return monster;
     }
 
     @Override
     public void insertImages() {
-        barrelImage = new Texture(Gdx.files.internal("Barrel.png"));
+        monsterImage = new Texture(Gdx.files.internal("Barrel.png"));
     }
 
     @Override
@@ -36,7 +35,7 @@ public class Barrel implements Obstacle{
         batch.begin();
 
         for (Rectangle barrel : barrels) {
-            batch.draw(barrelImage, barrel.x, barrel.y);
+            batch.draw(monsterImage, barrel.x, barrel.y);
             barrel.x -= 100 * Gdx.graphics.getDeltaTime();
         }
 
@@ -45,11 +44,11 @@ public class Barrel implements Obstacle{
 
     @Override
     public Texture getImage() {
-        return barrelImage;
+        return monsterImage;
     }
 
     @Override
     public Rectangle getRectangle() {
-        return barrel;
+        return monster;
     }
 }

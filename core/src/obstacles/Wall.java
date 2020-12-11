@@ -12,14 +12,17 @@ import static com.academiadecodigo.gnunas.screens.PlayingScreen.BACKGROUND_MOVE_
 public class Wall implements Obstacle{
 
     Texture wallImage;
-    public Rectangle create(float x, float y){
+    Rectangle wall;
 
-        Rectangle wall = new Rectangle();
+    public Rectangle create(){
 
-        wall.x = x;
-        wall.y= y;
+        wall = new Rectangle();
+
+        wall.x = 801;
+        wall.y= 310;
         wall.width = 25;
         wall.height = 270;
+        insertImages();
 
         return wall;
     }
@@ -39,5 +42,15 @@ public class Wall implements Obstacle{
         }
 
         batch.end();
+    }
+
+    @Override
+    public Texture getImage() {
+        return wallImage;
+    }
+
+    @Override
+    public Rectangle getRectangle() {
+        return wall;
     }
 }
