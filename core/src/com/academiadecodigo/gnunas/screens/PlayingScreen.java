@@ -24,7 +24,7 @@ public class PlayingScreen extends ScreenAdapter {
     Texture frame;
     Texture timerBoard;
     Texture herBoard;
-    Texture jump;
+    Texture jump,duck;
     private SpriteBatch batch;
     float yMax, yCoordBg1, yCoordBg2;
     float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
@@ -39,6 +39,7 @@ public class PlayingScreen extends ScreenAdapter {
     private Bullet bullet;
     private HerDecision decision = HerDecision.NONE;
     private com.badlogic.gdx.math.Rectangle buttonJump;
+    private Rectangle buttonDuck;
 
 
     public PlayingScreen(InHerHands game) {
@@ -67,6 +68,15 @@ public class PlayingScreen extends ScreenAdapter {
         shootDecision = generator.generateFont(parameter);
         duckDecision = generator.generateFont(parameter);
         jumpDecision = generator.generateFont(parameter);
+
+        duck = new Texture(Gdx.files.internal("button.png"));
+        buttonDuck = new Rectangle();
+        buttonDuck.x = 210;
+        buttonDuck.y = 220;
+        buttonDuck.width=150;
+        buttonDuck.height=50;
+
+
 
         jump = new Texture(Gdx.files.internal("button.png"));
         buttonJump = new Rectangle();
@@ -139,10 +149,11 @@ public class PlayingScreen extends ScreenAdapter {
         batch.draw(frame, 0, 0);
         batch.draw(timerBoard, 550, 20);
         batch.draw(jump, buttonJump.x, buttonJump.y);
+        batch.draw(duck,buttonDuck.x,buttonDuck.y);
 
         drawTimer(batch, timeElapsed);
         shootDecision.draw(batch, "Shoot", 35, 150);
-        duckDecision.draw(batch, "Duck", 210, 220);
+        duckDecision.draw(batch, "Duck", 210, 200);
         jumpDecision.draw(batch, "Jump", 380, 150);
         batch.end();
         renderPlayers();
@@ -196,6 +207,10 @@ public class PlayingScreen extends ScreenAdapter {
         HerDecision current = decision;
         if (playerController.getRectangle().overlaps(buttonJump)) {
             current = HerDecision.JUMP;
+        }
+
+        if(playerController.getRectangle().overlaps(buttonDuck)){
+            current=HerDecision.DUCK;
         }
 
 
