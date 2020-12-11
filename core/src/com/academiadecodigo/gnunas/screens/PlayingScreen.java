@@ -13,6 +13,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Rectangle;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class PlayingScreen extends ScreenAdapter {
 
@@ -21,6 +25,7 @@ public class PlayingScreen extends ScreenAdapter {
     Texture background2;
     Texture frame;
     Texture timerBoard;
+    Texture bulletImage;
     private SpriteBatch batch;
     float yMax, yCoordBg1, yCoordBg2;
     float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
@@ -31,13 +36,14 @@ public class PlayingScreen extends ScreenAdapter {
     private Player player1;
     private PlayerController playerController;
     private Music backgroundMusic;
-    private Bullet bullet;
+    private List<Rectangle> bullets;
 
 
     public PlayingScreen(InHerHands game) {
 
         this.game = game;
         batch = new SpriteBatch();
+        bullets = new LinkedList<Rectangle>();
 
         //Creates the infinite Background
         background1 = new Texture(Gdx.files.internal("GameBackground.png"));
@@ -60,11 +66,12 @@ public class PlayingScreen extends ScreenAdapter {
 
         player1 = new Player();
         playerController = new PlayerController();
-        bullet = new Bullet();
 
-        player1.createPlayer();
+        player1.createPlayer(this);
         playerController.createPlayerController();
-        bullet.createBullet();
+        //bullet.createBullet();
+
+        bulletImage = new Texture(Gdx.files.internal("player.jpg"));
     }
 
 
@@ -121,6 +128,7 @@ public class PlayingScreen extends ScreenAdapter {
 
         batch.end();
         renderPlayers();
+        renderBullets();
 
 
     }
@@ -157,11 +165,30 @@ public class PlayingScreen extends ScreenAdapter {
     }
 
     public void renderPlayers() {
+
         player1.renderPlayer(batch);
         playerController.renderPlayerController(batch);
-        bullet.renderBullet(batch);
-
     }
 
 
+    public void shootBullet() {
+
+        Bullet bullet = new Bullet();
+        System.out.println(player1.getX());
+        bullets.add(bullet.createBullet(player1.getX(),player1.getY()));
+
+    }
+
+    public void renderBullets(){
+
+        batch.begin();
+
+        for (Rectangle bullet : bullets) {
+            batch.draw(bulletImage,bullet.x,bullet.y);
+            bullet.x += 100 * Gdx.graphics.getDeltaTime();
+        }
+
+        batch.end();
+
+    }
 }
