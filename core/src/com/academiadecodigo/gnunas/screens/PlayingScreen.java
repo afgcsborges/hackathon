@@ -1,6 +1,7 @@
 package com.academiadecodigo.gnunas.screens;
 
-import com.academiadecodigo.gnunas.Bullet;
+import obstacles.Barrel;
+import obstacles.Bullet;
 import com.academiadecodigo.gnunas.InHerHands;
 import com.academiadecodigo.gnunas.player.Player;
 import com.academiadecodigo.gnunas.player.PlayerController;
@@ -8,12 +9,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Rectangle;
+import obstacles.Wall;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,11 +27,15 @@ public class PlayingScreen extends ScreenAdapter {
     Texture frame;
     Texture timerBoard;
     Texture bulletImage;
+
+    Texture wallImage;
+    Texture barrelImage;
+
     Texture herBoard;
     Texture jump,duck;
     private SpriteBatch batch;
     float yMax, yCoordBg1, yCoordBg2;
-    float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
+    public static float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
     float timeElapsed = 0f;
     FreeTypeFontGenerator font;
     private BitmapFont fontBit;
@@ -38,12 +43,19 @@ public class PlayingScreen extends ScreenAdapter {
     CharSequence str;
     private Player player1;
     private PlayerController playerController;
-    private Music backgroundMusic;
+    //Game Objects
     private List<Rectangle> bullets;
-    private Bullet bullet;
+    private List<Rectangle> brickWalls;
+    private List<Rectangle> barrels;
+
     private HerDecision decision = HerDecision.NONE;
     private com.badlogic.gdx.math.Rectangle buttonJump;
     private Rectangle buttonDuck;
+
+    private int obstacleCounter = 0;
+    private int difficulty = 15;
+
+    private List<Integer> used;
 
 
     public PlayingScreen(InHerHands game) {
@@ -51,6 +63,10 @@ public class PlayingScreen extends ScreenAdapter {
         this.game = game;
         batch = new SpriteBatch();
         bullets = new LinkedList<Rectangle>();
+        barrels = new LinkedList<>();
+        brickWalls = new LinkedList<>();
+        used = new LinkedList<>();
+
 
         //Creates the infinite Background
         background1 = new Texture(Gdx.files.internal("GameBackground.png"));
@@ -100,7 +116,11 @@ public class PlayingScreen extends ScreenAdapter {
         playerController.createPlayerController();
         //bullet.createBullet();
 
+        wallImage = new Texture(Gdx.files.internal("Wall.png"));
+        barrelImage = new Texture(Gdx.files.internal("Barrel.png"));
         bulletImage = new Texture(Gdx.files.internal("player.jpg"));
+
+
     }
 
 
@@ -128,7 +148,6 @@ public class PlayingScreen extends ScreenAdapter {
     @Override
     public void dispose() {
 
-
         batch.dispose();
         font.dispose();
 
@@ -152,7 +171,6 @@ public class PlayingScreen extends ScreenAdapter {
         batch.draw(background1, -yCoordBg1, 270);
         batch.draw(background2, -yCoordBg2, 270);
         batch.draw(herBoard, 17, 20);
-        batch.draw(frame, 0, 0);
         batch.draw(timerBoard, 550, 20);
         batch.draw(jump, buttonJump.x, buttonJump.y);
         batch.draw(duck,buttonDuck.x,buttonDuck.y);
@@ -164,7 +182,13 @@ public class PlayingScreen extends ScreenAdapter {
         batch.end();
         renderPlayers();
         renderBullets();
+        renderBarrels();
+        renderWalls();
         checkDecision();
+
+        batch.begin();
+        batch.draw(frame, 0, 0);
+        batch.end();
     }
 
     private void drawTimer(SpriteBatch batch, Float time) {
@@ -195,6 +219,26 @@ public class PlayingScreen extends ScreenAdapter {
 
         fontBit.draw(batch, str, 572, 123);
 
+        //Launching walls
+        if(obstacleCounter == 0 || (seconds % (difficulty * obstacleCounter) == 0 && !used.contains(seconds))){
+            used.add(seconds);
+            obstacleCounter++;
+            difficulty--;
+            Wall wall = new Wall();
+            brickWalls.add(wall.create(801, 310));
+            System.out.println("wall created");
+        }
+
+        //Launching barrels
+        if(obstacleCounter == 0 || (seconds % (difficulty * obstacleCounter) == 0 && !used.contains(seconds))){
+            used.add(seconds);
+            obstacleCounter++;
+            difficulty--;
+            Barrel barrel = new Barrel();
+            barrels.add(barrel.create(801, 310));
+            System.out.println("barrel created");
+        }
+
 
     }
 
@@ -214,13 +258,32 @@ public class PlayingScreen extends ScreenAdapter {
 
     }
 
-    public void renderBullets(){
-
+   public void renderBullets(){
         batch.begin();
-
         for (Rectangle bullet : bullets) {
             batch.draw(bulletImage,bullet.x,bullet.y);
             bullet.x += 100 * Gdx.graphics.getDeltaTime();
+        }
+        batch.end();
+    }
+
+    public void renderBarrels(){
+        batch.begin();
+
+        for (Rectangle barrel : barrels) {
+            batch.draw(barrelImage, barrel.x, barrel.y);
+            barrel.x -= 100 * Gdx.graphics.getDeltaTime();
+        }
+
+        batch.end();
+    }
+    public void renderWalls() {
+
+        batch.begin();
+
+        for (Rectangle wall : brickWalls) {
+            batch.draw(wallImage, wall.x, wall.y);
+            wall.x -= BACKGROUND_MOVE_SPEED * Gdx.graphics.getDeltaTime();
         }
 
         batch.end();

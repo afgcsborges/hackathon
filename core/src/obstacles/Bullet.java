@@ -1,4 +1,4 @@
-package com.academiadecodigo.gnunas;
+package obstacles;
 import static com.academiadecodigo.gnunas.player.Player.*;
 
 import com.academiadecodigo.gnunas.player.Player;
@@ -27,7 +27,7 @@ public class Bullet extends Sprite {
         bullet.width = 50;
         bullet.height = 50;
 
-        return  bullet;
+        return bullet;
 
     }
 }
