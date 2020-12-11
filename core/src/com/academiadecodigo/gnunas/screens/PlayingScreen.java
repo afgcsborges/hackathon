@@ -69,7 +69,7 @@ public class PlayingScreen extends ScreenAdapter {
         parameter.size = 58;
         fontBit = generator.generateFont(parameter);
 
-        duck = new Texture(Gdx.files.internal("buttons/button_horizontal_up.png"));
+        duck = new Texture(Gdx.files.internal("buttons/button_duck_up.png"));
         buttonDuck = new Rectangle();
         buttonDuck.x = 230;
         buttonDuck.y = 160;
@@ -78,14 +78,14 @@ public class PlayingScreen extends ScreenAdapter {
 
 
 
-        jump = new Texture(Gdx.files.internal("buttons/button_vertical_up.png"));
+        jump = new Texture(Gdx.files.internal("buttons/button_jump_up.png"));
         buttonJump = new Rectangle();
         buttonJump.x = 445;
         buttonJump.y =40;
         buttonJump.width = 60;
         buttonJump.height = 100;
 
-        shoot = new Texture(Gdx.files.internal("buttons/button_vertical_up.png"));
+        shoot = new Texture(Gdx.files.internal("buttons/button_shoot_up.png"));
         buttonShoot= new Rectangle();
         buttonShoot.x=45;
         buttonShoot.y = 40;
@@ -255,18 +255,18 @@ public class PlayingScreen extends ScreenAdapter {
 
     private void pressAndRelease() {
 
-        jump = new Texture(Gdx.files.internal("buttons/button_vertical_up.png"));
-        duck = new Texture(Gdx.files.internal("buttons/button_horizontal_up.png"));
-        shoot = new Texture(Gdx.files.internal("buttons/button_vertical_up.png"));
+        jump = new Texture(Gdx.files.internal("buttons/button_jump_up.png"));
+        duck = new Texture(Gdx.files.internal("buttons/button_duck_up.png"));
+        shoot = new Texture(Gdx.files.internal("buttons/button_shoot_up.png"));
 
         if (decision == HerDecision.NONE){
             return;
         } else if (decision == HerDecision.JUMP) {
-            jump = new Texture(Gdx.files.internal("buttons/button_vertical_down.png"));
+            jump = new Texture(Gdx.files.internal("buttons/button_jump_down.png"));
         } else if (decision == HerDecision.DUCK) {
-            duck = new Texture(Gdx.files.internal("buttons/button_horizontal_down.png"));
+            duck = new Texture(Gdx.files.internal("buttons/button_duck_down.png"));
         } else {
-            shoot = new Texture(Gdx.files.internal("buttons/button_vertical_down.png"));
+            shoot = new Texture(Gdx.files.internal("buttons/button_shoot_down.png"));
         }
     }
 

@@ -52,7 +52,7 @@ public class PlayerController {
         controller.x= 20 + 240;
         controller.y= 30;
         controller.width = 40;
-        controller.height = 68;
+        controller.height = 20;
 
         camera= new OrthographicCamera();
         camera.setToOrtho(false,800,290);
