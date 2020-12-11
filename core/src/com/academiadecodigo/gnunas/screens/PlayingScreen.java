@@ -32,14 +32,13 @@ public class PlayingScreen extends ScreenAdapter {
     Texture barrelImage;
 
     Texture herBoard;
-    Texture jump,duck;
+    Texture jump,duck,shoot;
     private SpriteBatch batch;
     float yMax, yCoordBg1, yCoordBg2;
     public static float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
     float timeElapsed = 0f;
     FreeTypeFontGenerator font;
     private BitmapFont fontBit;
-    private BitmapFont shootDecision, jumpDecision, duckDecision;
     CharSequence str;
     private Player player1;
     private PlayerController playerController;
@@ -49,8 +48,7 @@ public class PlayingScreen extends ScreenAdapter {
     private List<Rectangle> barrels;
 
     private HerDecision decision = HerDecision.NONE;
-    private com.badlogic.gdx.math.Rectangle buttonJump;
-    private Rectangle buttonDuck;
+    private Rectangle buttonDuck,buttonShoot,buttonJump;
 
     private int obstacleCounter = 0;
     private int difficulty = 15;
@@ -80,31 +78,34 @@ public class PlayingScreen extends ScreenAdapter {
 
 
         timerBoard = new Texture(Gdx.files.internal("TimerBackground.png"));
-        herBoard = new Texture(Gdx.files.internal("rectangle_510_210.png"));
+        herBoard = new Texture(Gdx.files.internal("buttons/layout_player2.png"));
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font2.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 58;
         fontBit = generator.generateFont(parameter);
-        shootDecision = generator.generateFont(parameter);
-        duckDecision = generator.generateFont(parameter);
-        jumpDecision = generator.generateFont(parameter);
 
-        duck = new Texture(Gdx.files.internal("button.png"));
+        duck = new Texture(Gdx.files.internal("buttons/button_duck_up.png"));
         buttonDuck = new Rectangle();
-        buttonDuck.x = 210;
-        buttonDuck.y = 220;
-        buttonDuck.width=150;
-        buttonDuck.height=50;
+        buttonDuck.x = 230;
+        buttonDuck.y = 160;
+        buttonDuck.width = 100;
+        buttonDuck.height = 60;
 
 
-
-        jump = new Texture(Gdx.files.internal("button.png"));
+        jump = new Texture(Gdx.files.internal("buttons/button_jump_up.png"));
         buttonJump = new Rectangle();
-        buttonJump.x = 380;
-        buttonJump.y = 150;
-        buttonJump.width = 150;
-        buttonJump.height = 50;
+        buttonJump.x = 445;
+        buttonJump.y = 40;
+        buttonJump.width = 60;
+        buttonJump.height = 100;
+
+        shoot = new Texture(Gdx.files.internal("buttons/button_shoot_up.png"));
+        buttonShoot = new Rectangle();
+        buttonShoot.x = 45;
+        buttonShoot.y = 40;
+        buttonShoot.width = 60;
+        buttonShoot.height = 100;
 
 
         //font = new BitmapFont();
@@ -118,9 +119,9 @@ public class PlayingScreen extends ScreenAdapter {
 
         wallImage = new Texture(Gdx.files.internal("Wall.png"));
         barrelImage = new Texture(Gdx.files.internal("Barrel.png"));
-        bulletImage = new Texture(Gdx.files.internal("player.jpg"));
 
 
+        bulletImage = new Texture(Gdx.files.internal("bullet.png"));
     }
 
 
@@ -174,11 +175,8 @@ public class PlayingScreen extends ScreenAdapter {
         batch.draw(timerBoard, 550, 20);
         batch.draw(jump, buttonJump.x, buttonJump.y);
         batch.draw(duck,buttonDuck.x,buttonDuck.y);
-
+        batch.draw(shoot,buttonShoot.x,buttonShoot.y);
         drawTimer(batch, timeElapsed);
-        shootDecision.draw(batch, "Shoot", 35, 150);
-        duckDecision.draw(batch, "Duck", 210, 200);
-        jumpDecision.draw(batch, "Jump", 380, 150);
         batch.end();
         renderPlayers();
         renderBullets();
@@ -297,14 +295,38 @@ public class PlayingScreen extends ScreenAdapter {
             current = HerDecision.JUMP;
         }
 
-        if(playerController.getRectangle().overlaps(buttonDuck)){
+        else if(playerController.getRectangle().overlaps(buttonDuck)){
             current=HerDecision.DUCK;
+        }
+
+        else if(playerController.getRectangle().overlaps(buttonShoot)){
+            current=HerDecision.SHOOT;
+        } else {
+            current=HerDecision.NONE;
         }
 
 
         if (current != decision) {
             decision = current;
             player1.setDecision(current);
+            pressAndRelease();
+        }
+    }
+
+    private void pressAndRelease() {
+
+        jump = new Texture(Gdx.files.internal("buttons/button_jump_up.png"));
+        duck = new Texture(Gdx.files.internal("buttons/button_duck_up.png"));
+        shoot = new Texture(Gdx.files.internal("buttons/button_shoot_up.png"));
+
+        if (decision == HerDecision.NONE){
+            return;
+        } else if (decision == HerDecision.JUMP) {
+            jump = new Texture(Gdx.files.internal("buttons/button_jump_down.png"));
+        } else if (decision == HerDecision.DUCK) {
+            duck = new Texture(Gdx.files.internal("buttons/button_duck_down.png"));
+        } else {
+            shoot = new Texture(Gdx.files.internal("buttons/button_shoot_down.png"));
         }
     }
 
