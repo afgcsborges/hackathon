@@ -13,15 +13,17 @@ public class Wall implements Obstacle{
 
     Texture wallImage;
     Rectangle wall;
+    private  int attackCounter = 0;
+    Texture[] wallImages;
 
     public Rectangle create(){
 
         wall = new Rectangle();
 
         wall.x = 801;
-        wall.y= 310;
-        wall.width = 25;
-        wall.height = 270;
+        wall.y= 350;
+        wall.width = 180;
+        wall.height = 134;
         insertImages();
 
         return wall;
@@ -29,7 +31,12 @@ public class Wall implements Obstacle{
 
     @Override
     public void insertImages() {
-        wallImage = new Texture(Gdx.files.internal("Wall.png"));
+        wallImage = new Texture(Gdx.files.internal("Phoenix/phoenix_down.png"));
+        wallImages = new Texture[] {
+                new Texture(Gdx.files.internal("Phoenix/phoenix_down.png")),
+                new Texture(Gdx.files.internal("Phoenix/phoenix_up.png")),
+
+        };
     }
 
     @Override
@@ -52,5 +59,15 @@ public class Wall implements Obstacle{
     @Override
     public Rectangle getRectangle() {
         return wall;
+    }
+
+    public void changeImage() {
+
+        attackCounter++;
+
+        wallImage = wallImages[attackCounter -1];
+        if (attackCounter == 2) {
+            attackCounter = 0;
+        }
     }
 }

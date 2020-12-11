@@ -168,4 +168,6 @@ public class Player extends Sprite {
     public void setDecision(PlayingScreen.HerDecision decision) {
         this.decision = decision;
     }
+
+
 }

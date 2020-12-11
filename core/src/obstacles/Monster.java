@@ -20,8 +20,8 @@ public class Monster implements Obstacle {
 
         monster.x = 801;
         monster.y= 310;
-        monster.width = 155;
-        monster.height = 140;
+        monster.width = 130;
+        monster.height = 120;
         insertImages();
 
         return monster;
