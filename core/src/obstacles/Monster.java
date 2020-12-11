@@ -1,5 +1,6 @@
 package obstacles;
 
+import com.academiadecodigo.gnunas.screens.PlayingScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -17,10 +18,14 @@ public class Monster implements Obstacle {
     private int attackCounter;
     private Music monsterRoarSound;
     private Music monsterKnifeSound;
+    private PlayingScreen game;
 
     public Rectangle create(){
 
         monster = new Rectangle();
+        monsterRoarSound = Gdx.audio.newMusic(Gdx.files.internal("orc_roar.wav"));
+
+        monsterKnifeSound = Gdx.audio.newMusic(Gdx.files.internal("knife2.wav"));
 
         monster.x = 801;
         monster.y= 310;
@@ -34,11 +39,7 @@ public class Monster implements Obstacle {
     @Override
     public void insertImages() {
         monsterImage = new Texture(Gdx.files.internal("orc/orc_idle_0.png"));
-        monsterRoarSound = Gdx.audio.newMusic(Gdx.files.internal("orc_roar.wav"));
-        monsterRoarSound.play();
-        monsterKnifeSound = Gdx.audio.newMusic(Gdx.files.internal("knife2.wav"));
-        monsterKnifeSound.setLooping(true);
-        monsterKnifeSound.play();
+
 
 
 
@@ -62,6 +63,7 @@ public class Monster implements Obstacle {
 
         for (Rectangle barrel : barrels) {
             batch.draw(monsterImage, barrel.x, barrel.y);
+
             barrel.x -= 100 * Gdx.graphics.getDeltaTime();
         }
 
@@ -70,12 +72,19 @@ public class Monster implements Obstacle {
 
     @Override
     public Texture getImage() {
+        monsterRoarSound.play();
+        monsterKnifeSound.play();
         return monsterImage;
     }
 
     @Override
     public Rectangle getRectangle() {
         return monster;
+    }
+
+    @Override
+    public void setGame(PlayingScreen playingScreen) {
+        this.game = playingScreen;
     }
 
     public void changeImage() {

@@ -1,5 +1,6 @@
 package obstacles;
 
+import com.academiadecodigo.gnunas.screens.PlayingScreen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,4 +14,6 @@ public interface Obstacle {
      Texture getImage();
 
      Rectangle getRectangle();
+
+    void setGame(PlayingScreen playingScreen);
 }

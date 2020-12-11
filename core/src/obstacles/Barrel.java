@@ -1,5 +1,6 @@
 package obstacles;
 
+import com.academiadecodigo.gnunas.screens.PlayingScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +12,7 @@ public class Barrel implements Obstacle{
 
     Texture barrelImage;
     Rectangle barrel;
+    private PlayingScreen game;
 
     public Rectangle create(){
 
@@ -51,5 +53,10 @@ public class Barrel implements Obstacle{
     @Override
     public Rectangle getRectangle() {
         return barrel;
+    }
+
+    @Override
+    public void setGame(PlayingScreen playingScreen) {
+        this.game = playingScreen;
     }
 }

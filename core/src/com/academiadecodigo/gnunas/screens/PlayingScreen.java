@@ -33,7 +33,7 @@ public class PlayingScreen extends ScreenAdapter {
     Texture jump, duck, shoot;
     private SpriteBatch batch;
     float yMax, yCoordBg1, yCoordBg2;
-    public static float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
+    public float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
     float timeElapsed = 0f;
     FreeTypeFontGenerator font;
     private BitmapFont fontBit;
@@ -214,6 +214,7 @@ public class PlayingScreen extends ScreenAdapter {
             }
 
             if (player1.getPlayer().overlaps(obstacle.getRectangle())) {
+                BACKGROUND_MOVE_SPEED = 100f;
                 game.setScreen(new GameOverScreen(game, timeElapsed));
             }
             if (obstacle instanceof Monster) {
@@ -270,14 +271,15 @@ public class PlayingScreen extends ScreenAdapter {
         if (difficulty == 1 || difficulty % level == 0) {
 
             level-=15;
-            if( level <100) {
-                level = 100;
+            if( level <200) {
+                level = 200;
             }
 
 
 
             Obstacle obstacle = ObstacleFactory.createObstacle();
             obstacle.create();
+            obstacle.setGame(this);
 
             obstacles.add(obstacle);
         }
@@ -376,6 +378,10 @@ public class PlayingScreen extends ScreenAdapter {
 
     public HerDecision getDecision() {
         return decision;
+    }
+
+    public float getBACKGROUND_MOVE_SPEED() {
+        return BACKGROUND_MOVE_SPEED;
     }
 
     public enum HerDecision {

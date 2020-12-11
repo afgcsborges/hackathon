@@ -1,13 +1,15 @@
 package obstacles;
 
+import com.academiadecodigo.gnunas.InHerHands;
+import com.academiadecodigo.gnunas.screens.PlayingScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.LinkedList;
 
-import static com.academiadecodigo.gnunas.screens.PlayingScreen.BACKGROUND_MOVE_SPEED;
 
 public class Wall implements Obstacle{
 
@@ -15,11 +17,15 @@ public class Wall implements Obstacle{
     Rectangle wall;
     private  int attackCounter = 0;
     Texture[] wallImages;
+    private Music birdSound;
+    private PlayingScreen game;
+
 
     public Rectangle create(){
 
-        wall = new Rectangle();
 
+        wall = new Rectangle();
+        birdSound = Gdx.audio.newMusic(Gdx.files.internal("bird_sound.wav"));
         wall.x = 801;
         wall.y= 350;
         wall.width = 180;
@@ -31,6 +37,7 @@ public class Wall implements Obstacle{
 
     @Override
     public void insertImages() {
+
         wallImage = new Texture(Gdx.files.internal("Phoenix/phoenix_down.png"));
         wallImages = new Texture[] {
                 new Texture(Gdx.files.internal("Phoenix/phoenix_down.png")),
@@ -45,7 +52,7 @@ public class Wall implements Obstacle{
 
         for (Rectangle wall : brickWalls) {
             batch.draw(wallImage, wall.x, wall.y);
-            wall.x -= BACKGROUND_MOVE_SPEED * Gdx.graphics.getDeltaTime();
+            wall.x -= game.getBACKGROUND_MOVE_SPEED() * Gdx.graphics.getDeltaTime();
         }
 
         batch.end();
@@ -53,6 +60,7 @@ public class Wall implements Obstacle{
 
     @Override
     public Texture getImage() {
+        birdSound.play();
         return wallImage;
     }
 
@@ -69,5 +77,10 @@ public class Wall implements Obstacle{
         if (attackCounter == 2) {
             attackCounter = 0;
         }
+    }
+
+    @Override
+    public void setGame(PlayingScreen game) {
+        this.game = game;
     }
 }
