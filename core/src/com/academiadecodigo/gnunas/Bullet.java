@@ -22,10 +22,10 @@ public class Bullet extends Sprite {
 
         Rectangle bullet = new Rectangle();
 
-        bullet.x = x;
-        bullet.y= y;
-        bullet.width = 50;
-        bullet.height = 50;
+        bullet.x = x + 47;
+        bullet.y= y + 25;
+        bullet.width = 17;
+        bullet.height = 9;
 
         return  bullet;
 

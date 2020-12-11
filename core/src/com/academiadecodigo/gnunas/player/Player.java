@@ -18,31 +18,53 @@ public class Player extends Sprite {
     private boolean backToGround = false;
     private PlayingScreen game;
     private boolean ducking = false;
-    private PlayingScreen.HerDecision decision = PlayingScreen.HerDecision.DUCK;
+    private PlayingScreen.HerDecision decision = PlayingScreen.HerDecision.NONE;
+
+    private Texture[] leftMove;
+    private Texture[] rightMove;
+    private int counter;
+    private boolean movingFront = true;
 
 
     public void createPlayer(PlayingScreen game){
         this.game = game;
-        playerImage = new Texture(Gdx.files.internal("square50.png"));
+
+
+        leftMove = new Texture[] {
+                new Texture(Gdx.files.internal("Man/man_left_run.png")),
+                new Texture(Gdx.files.internal("Man/man_left_run_1.png")),
+                new Texture(Gdx.files.internal("Man/man_left_still.png"))
+        };
+
+        rightMove = new Texture[] {
+                new Texture(Gdx.files.internal("Man/man_right_run.png")),
+                new Texture(Gdx.files.internal("Man/man_right_run_1.png")),
+                new Texture(Gdx.files.internal("Man/man_right_still.png"))
+        };
+        playerImage = new Texture(Gdx.files.internal("Man/man_right_still.png"));
         player = new Rectangle();
         player.x = 100;
-        player.y= 280 + 40;
-        player.width = 25;
-        player.height = 50;
+        player.y= 280 + 30;
+        player.width = 51;
+        player.height = 73;
 
         camera= new OrthographicCamera();
         camera.setToOrtho(false,800,290);
     }
 
     public void renderPlayer(SpriteBatch batch){
-       // Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-       // Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-       // camera.update();
-        //batch.setProjectionMatrix(camera.combined);
+        counter ++;
+
+        if (counter%5 == 0) {
+            playerImage = movingFront ? rightMove[(counter/5) - 1] : leftMove[(counter/5) - 1];
+        }
+
+        if (counter==15) counter = 0;
+
 
         if(ducking){
-            playerImage = new Texture(Gdx.files.internal("square25.png"));
+            playerImage = new Texture(Gdx.files.internal("Man/man_crouch.png"));
             player.height = 25;
         }
 
@@ -50,18 +72,21 @@ public class Player extends Sprite {
         batch.draw(playerImage, player.x, player.y);
         batch.end();
 
-       /* if(Gdx.input.isTouched()){
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            player.x = touchPos.x - 50 / 2;
-        }*/
+
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            movingFront = true;
+
             player.x += 250 * Gdx.graphics.getDeltaTime();
+
+
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            movingFront = false;
+
             player.x -= 250 * Gdx.graphics.getDeltaTime();
+
+
         }
 
         Gdx.input.setInputProcessor(new InputAdapter() {
@@ -69,7 +94,7 @@ public class Player extends Sprite {
             public boolean keyUp(int keyCode) {
                 if (keyCode == Input.Keys.SPACE) {
                     ducking = false;
-                    playerImage = new Texture(Gdx.files.internal("square50.png"));
+                    playerImage = new Texture(Gdx.files.internal("Man/man_right_still.png"));
                     player.height = 50;
                 }
                 return true;
@@ -80,6 +105,9 @@ public class Player extends Sprite {
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
 
             System.out.println(decision);
+            if (decision == PlayingScreen.HerDecision.SHOOT){
+                game.shootBullet();
+            }
 
             if (decision == PlayingScreen.HerDecision.DUCK){
                 ducking = true;
@@ -101,9 +129,9 @@ public class Player extends Sprite {
         }
         if (backToGround == true) {
             player.y -= 10 * Gdx.graphics.getDeltaTime()*50;
-            if (player.y <= 320) {
+            if (player.y <= 310) {
                 backToGround = false;
-                player.y = 320;
+                player.y = 310;
             }
         }
 
@@ -114,9 +142,6 @@ public class Player extends Sprite {
 
         //shoot
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
-            game.shootBullet();
-        }
 
     }
 
