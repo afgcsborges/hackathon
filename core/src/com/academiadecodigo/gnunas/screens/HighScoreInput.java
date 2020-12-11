@@ -163,7 +163,7 @@ public class HighScoreInput extends ScreenAdapter {
             public void canceled() {
 
             }
-        }, ola, ola, ola);
+        }, "Name yourself", "batata", "batata");
     }
 
     @Override

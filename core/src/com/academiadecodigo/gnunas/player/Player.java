@@ -112,7 +112,6 @@ public class Player extends Sprite {
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
 
-            System.out.println(decision);
             if (decision == PlayingScreen.HerDecision.SHOOT){
                 game.shootBullet();
             }

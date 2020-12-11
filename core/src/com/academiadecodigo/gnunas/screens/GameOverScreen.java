@@ -62,7 +62,7 @@ public class GameOverScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+        if(Gdx.input.isKeyPressed(Input.Keys.R)){
             game.setScreen(new PlayingScreen(game));
         }
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
@@ -77,7 +77,6 @@ public class GameOverScreen extends ScreenAdapter {
         drawTimer(batch, score);
         batch.end();
 
-        System.out.println(username);
 
 
 

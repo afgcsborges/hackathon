@@ -40,7 +40,7 @@ public class MenuScreen extends ScreenAdapter {
             game.setScreen(new PlayingScreen(game));
         }
         if(Gdx.input.isKeyPressed(Input.Keys.H)){
-            //game.setScreen(new MenuScreen(game));
+            game.setScreen(new HighScoreScreen(game));
         }
         if(Gdx.input.isKeyPressed(Input.Keys.I)){
             game.setScreen(new InstructionsScreen(game));
