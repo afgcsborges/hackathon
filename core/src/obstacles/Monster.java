@@ -1,6 +1,8 @@
 package obstacles;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,6 +15,8 @@ public class Monster implements Obstacle {
     Texture[] orcImages;
     Rectangle monster;
     private int attackCounter;
+    private Music monsterRoarSound;
+    private Music monsterKnifeSound;
 
     public Rectangle create(){
 
@@ -30,6 +34,15 @@ public class Monster implements Obstacle {
     @Override
     public void insertImages() {
         monsterImage = new Texture(Gdx.files.internal("orc/orc_idle_0.png"));
+        monsterRoarSound = Gdx.audio.newMusic(Gdx.files.internal("orc_roar.wav"));
+        monsterRoarSound.play();
+        monsterKnifeSound = Gdx.audio.newMusic(Gdx.files.internal("knife2.wav"));
+        monsterKnifeSound.setLooping(true);
+        monsterKnifeSound.play();
+
+
+
+
         orcImages = new Texture[] {
                 new Texture(Gdx.files.internal("orc/orc_idle_0.png")),
                 new Texture(Gdx.files.internal("orc/orc_idle_1.png")),
@@ -72,6 +85,7 @@ public class Monster implements Obstacle {
         monsterImage = orcImages[attackCounter -1];
         if (attackCounter == 7) {
             attackCounter = 0;
+
         }
     }
 }

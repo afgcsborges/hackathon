@@ -2,6 +2,7 @@ package com.academiadecodigo.gnunas.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,7 +16,9 @@ public class PlayerController {
     private Texture[] downMove;
     private Texture[] leftMove;
     private Texture[] rightMove;
+    private Music girlSound;
     private int counter;
+    private boolean pressedButton= false;
 
 
 
@@ -65,53 +68,98 @@ public class PlayerController {
         batch.end();
 
 
+
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
             counter ++;
-
+            if(pressedButton == false){
+                girlSound = Gdx.audio.newMusic(Gdx.files.internal("stone_press.wav"));
+            }
             controller.y += 200 * Gdx.graphics.getDeltaTime();
 
             if (counter%5 == 0) {
                 controllerImage = upMove[(counter/5) - 1];
+
             }
 
-            if (counter==15) counter = 0;
+            if (counter==15){
+                counter = 0;
+                pressedButton = true;
+
+                girlSound.play();
+
+
+            }
+
+
 
         }
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             counter ++;
-
+            if(pressedButton == false){
+                girlSound = Gdx.audio.newMusic(Gdx.files.internal("stone_press.wav"));
+            }
             controller.y -= 200 * Gdx.graphics.getDeltaTime();
 
             if (counter%5 == 0) {
                 controllerImage = downMove[(counter / 5) - 1];
+
             }
-            if (counter == 15) counter = 0;
+            if (counter == 15) {
+                counter = 0;
+                pressedButton = true;
+
+                girlSound.play();
+
+            }
+
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
 
 
             counter ++;
-
+            if(pressedButton == false){
+                girlSound = Gdx.audio.newMusic(Gdx.files.internal("stone_press.wav"));
+            }
             controller.x += 200 * Gdx.graphics.getDeltaTime();
 
             if (counter%5 == 0) {
                 controllerImage = rightMove[(counter/5) - 1];
+
             }
 
-            if (counter==15) counter = 0;
+            if (counter==15) {
+                counter = 0;
+                pressedButton = true;
+
+                girlSound.play();
+
+            }
+
         }
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
 
 
             counter ++;
-
+            if(pressedButton == false){
+                girlSound = Gdx.audio.newMusic(Gdx.files.internal("stone_press.wav"));
+            }
             controller.x -= 200 * Gdx.graphics.getDeltaTime();
 
             if (counter%5 == 0) {
                 controllerImage = leftMove[(counter / 5) - 1];
+
             }
-            if (counter == 15) counter = 0;
+            if (counter == 15){
+                counter = 0;
+                pressedButton = true;
+
+                girlSound.play();
+
+
+            }
+
+
         }
 
         if(controller.y > 230 - 50/2-30) controller.y = 230 - 50/2-30;

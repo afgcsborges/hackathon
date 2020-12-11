@@ -4,6 +4,8 @@ import com.academiadecodigo.gnunas.screens.PlayingScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -24,7 +26,8 @@ public class Player extends Sprite {
     private Texture[] rightMove;
     private int counter;
     private boolean movingFront = true;
-
+    private Music walkingSound;
+    private Music jumpingSound;
 
     public void createPlayer(PlayingScreen game){
         this.game = game;
@@ -33,7 +36,8 @@ public class Player extends Sprite {
         leftMove = new Texture[] {
                 new Texture(Gdx.files.internal("Man/man_left_run.png")),
                 new Texture(Gdx.files.internal("Man/man_left_run_1.png")),
-                new Texture(Gdx.files.internal("Man/man_left_still.png"))
+                new Texture(Gdx.files.internal("Man/man_left_still.png")),
+
         };
 
         rightMove = new Texture[] {
@@ -58,6 +62,7 @@ public class Player extends Sprite {
 
         if (counter%5 == 0) {
             playerImage = movingFront ? rightMove[(counter/5) - 1] : leftMove[(counter/5) - 1];
+
         }
 
         if (counter==15) counter = 0;
@@ -70,6 +75,9 @@ public class Player extends Sprite {
 
         batch.begin();
         batch.draw(playerImage, player.x, player.y);
+       // walkingSound = Gdx.audio.newMusic(Gdx.files.internal("walking.mp3"));
+       // walkingSound.setLooping(true);
+       // walkingSound.play();
         batch.end();
 
 
@@ -116,10 +124,15 @@ public class Player extends Sprite {
             if(decision == PlayingScreen.HerDecision.JUMP) {
                 if (!backToGround) {
                     jumping = true;
+
                 }
             }
         }
         if(jumping) {
+            jumpingSound = Gdx.audio.newMusic(Gdx.files.internal("jump.wav"));
+            jumpingSound.play();
+            jumpingSound = Gdx.audio.newMusic(Gdx.files.internal("jump.wav"));
+            jumpingSound.play();
             player.y += 10 * Gdx.graphics.getDeltaTime()*50;
 
             if (player.y >= 500) {

@@ -2,6 +2,7 @@ package com.academiadecodigo.gnunas;
 
 import com.academiadecodigo.gnunas.screens.MenuScreen;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.academiadecodigo.gnunas.map.Map;
@@ -20,6 +21,12 @@ public class InHerHands extends Game {
 	private Player player1;
 	private PlayerController playerController;
 	private Music backgroundMusic;
+    private float volume= 1;
+
+	private Music monsterRoarSound;
+	private Sound monsterKnifeSound;
+
+
     SpriteBatch batch;
     Texture img;
     private int state = 0;
@@ -28,8 +35,11 @@ public class InHerHands extends Game {
 
     @Override
     public void create() {
+
         setScreen(new MenuScreen(this));
+
         backgroundMusic= Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
+        backgroundMusic.setVolume(1);
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
@@ -43,6 +53,7 @@ public class InHerHands extends Game {
 		player1.disposePlayer();
 		playerController.disposePlayer();
 		backgroundMusic.dispose();
+
     }
 
     public enum GameState {
