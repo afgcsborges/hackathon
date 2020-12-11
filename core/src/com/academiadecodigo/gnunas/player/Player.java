@@ -4,26 +4,25 @@ import com.academiadecodigo.gnunas.screens.PlayingScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.IntFloatMap;
 
 public class Player extends Sprite {
     private Texture playerImage;
-    public static Rectangle player;
+    private Rectangle player;
     private OrthographicCamera camera;
     private boolean jumping = false;
     private boolean backToGround = false;
+    private PlayingScreen game;
     private boolean ducking = false;
     private PlayingScreen.HerDecision decision = PlayingScreen.HerDecision.DUCK;
 
 
-    public void createPlayer(){
+    public void createPlayer(PlayingScreen game){
+        this.game = game;
         playerImage = new Texture(Gdx.files.internal("square50.png"));
         player = new Rectangle();
         player.x = 100;
@@ -112,12 +111,33 @@ public class Player extends Sprite {
         if(player.y < 290 - 50/2+10) player.y = 290 - 50/2+10;
         if(player.x > 800-50/2-45) player.x =800-50/2-45;
         if(player.x < 25) player.x = 25;
+
+        //shoot
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
+            game.shootBullet();
+        }
+
     }
 
 
     public void disposePlayer(){
         playerImage.dispose();
 
+    }
+
+    public Rectangle getPlayer() {
+        return player;
+    }
+
+    @Override
+    public float getX() {
+        return player.getX();
+    }
+
+    @Override
+    public float getY() {
+        return player.getY();
     }
 
     public void setDecision(PlayingScreen.HerDecision decision) {

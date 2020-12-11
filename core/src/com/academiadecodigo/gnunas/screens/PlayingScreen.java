@@ -14,7 +14,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Rectangle;
-import org.graalvm.compiler.lir.StandardOp;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class PlayingScreen extends ScreenAdapter {
 
@@ -23,6 +25,7 @@ public class PlayingScreen extends ScreenAdapter {
     Texture background2;
     Texture frame;
     Texture timerBoard;
+    Texture bulletImage;
     Texture herBoard;
     Texture jump,duck;
     private SpriteBatch batch;
@@ -36,6 +39,7 @@ public class PlayingScreen extends ScreenAdapter {
     private Player player1;
     private PlayerController playerController;
     private Music backgroundMusic;
+    private List<Rectangle> bullets;
     private Bullet bullet;
     private HerDecision decision = HerDecision.NONE;
     private com.badlogic.gdx.math.Rectangle buttonJump;
@@ -46,6 +50,7 @@ public class PlayingScreen extends ScreenAdapter {
 
         this.game = game;
         batch = new SpriteBatch();
+        bullets = new LinkedList<Rectangle>();
 
         //Creates the infinite Background
         background1 = new Texture(Gdx.files.internal("GameBackground.png"));
@@ -90,11 +95,12 @@ public class PlayingScreen extends ScreenAdapter {
 
         player1 = new Player();
         playerController = new PlayerController();
-        bullet = new Bullet();
 
-        player1.createPlayer();
+        player1.createPlayer(this);
         playerController.createPlayerController();
-        bullet.createBullet();
+        //bullet.createBullet();
+
+        bulletImage = new Texture(Gdx.files.internal("player.jpg"));
     }
 
 
@@ -157,9 +163,8 @@ public class PlayingScreen extends ScreenAdapter {
         jumpDecision.draw(batch, "Jump", 380, 150);
         batch.end();
         renderPlayers();
+        renderBullets();
         checkDecision();
-
-
     }
 
     private void drawTimer(SpriteBatch batch, Float time) {
@@ -195,12 +200,32 @@ public class PlayingScreen extends ScreenAdapter {
 
 
     public void renderPlayers() {
+
         player1.renderPlayer(batch);
         playerController.renderPlayerController(batch);
-        bullet.renderBullet(batch);
+    }
+
+
+    public void shootBullet() {
+
+        Bullet bullet = new Bullet();
+        System.out.println(player1.getX());
+        bullets.add(bullet.createBullet(player1.getX(),player1.getY()));
 
     }
 
+    public void renderBullets(){
+
+        batch.begin();
+
+        for (Rectangle bullet : bullets) {
+            batch.draw(bulletImage,bullet.x,bullet.y);
+            bullet.x += 100 * Gdx.graphics.getDeltaTime();
+        }
+
+        batch.end();
+
+    }
 
     private void checkDecision() {
         //TODO: se estiver em cima de x entao decision = x
@@ -231,6 +256,4 @@ public class PlayingScreen extends ScreenAdapter {
         DUCK,
         SHOOT
     }
-
-
 }

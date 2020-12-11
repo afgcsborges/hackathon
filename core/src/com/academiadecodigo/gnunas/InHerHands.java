@@ -20,7 +20,6 @@ public class InHerHands extends Game {
 	private Player player1;
 	private PlayerController playerController;
 	private Music backgroundMusic;
-	private Bullet bullet;
     SpriteBatch batch;
     Texture img;
     private int state = 0;
@@ -30,6 +29,9 @@ public class InHerHands extends Game {
     @Override
     public void create() {
         setScreen(new MenuScreen(this));
+        backgroundMusic= Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
 
     }
 
@@ -40,7 +42,7 @@ public class InHerHands extends Game {
 		map.disposeMap(batch);
 		player1.disposePlayer();
 		playerController.disposePlayer();
-		bullet.disposeBullet();
+		backgroundMusic.dispose();
     }
 
     public enum GameState {
