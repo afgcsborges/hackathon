@@ -20,7 +20,6 @@ public class InHerHands extends Game {
 	private Player player1;
 	private PlayerController playerController;
 	private Music backgroundMusic;
-	private Bullet bullet;
     SpriteBatch batch;
     Texture img;
     private int state = 0;
@@ -43,7 +42,6 @@ public class InHerHands extends Game {
 		map.disposeMap(batch);
 		player1.disposePlayer();
 		playerController.disposePlayer();
-		bullet.disposeBullet();
 		backgroundMusic.dispose();
     }
 

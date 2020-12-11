@@ -62,4 +62,8 @@ public class PlayerController {
         controllerImage.dispose();
 
     }
+
+    public Rectangle getRectangle() {
+        return controller;
+    }
 }
