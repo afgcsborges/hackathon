@@ -30,7 +30,7 @@ public class PlayingScreen extends ScreenAdapter {
     Texture barrelImage;
 
     Texture herBoard;
-    Texture jump,duck,shoot;
+    Texture jump, duck, shoot;
     private SpriteBatch batch;
     float yMax, yCoordBg1, yCoordBg2;
     public static float BACKGROUND_MOVE_SPEED = 100f; // pixels per second. Put your value here.
@@ -45,13 +45,17 @@ public class PlayingScreen extends ScreenAdapter {
     private List<Obstacle> obstacles;
 
     private HerDecision decision = HerDecision.NONE;
-    private Rectangle buttonDuck,buttonShoot,buttonJump;
+    private Rectangle buttonDuck, buttonShoot, buttonJump;
 
-    private int obstacleCounter = 0;
-    private int difficulty = 10;
+    private int difficulty = 0;
+    private int level = 600;
 
-    private List<Integer> used;
     private int orcCounter = 0;
+
+    LinkedList<Rectangle> disposeBullet;
+    LinkedList<Obstacle> disposeWall;
+
+    private float lastShot = 0f;
 
 
     public PlayingScreen(InHerHands game) {
@@ -60,7 +64,8 @@ public class PlayingScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         bullets = new LinkedList<Rectangle>();
         obstacles = new LinkedList<>();
-        used = new LinkedList<>();
+        disposeBullet = new LinkedList<>();
+        disposeWall = new LinkedList<>();
 
 
         //Creates the infinite Background
@@ -105,14 +110,12 @@ public class PlayingScreen extends ScreenAdapter {
         buttonShoot.height = 100;
 
 
-        //font = new BitmapFont();
-
         player1 = new Player();
         playerController = new PlayerController();
 
         player1.createPlayer(this);
         playerController.createPlayerController();
-        //bullet.createBullet();
+
 
         wallImage = new Texture(Gdx.files.internal("Wall.png"));
         barrelImage = new Texture(Gdx.files.internal("Barrel.png"));
@@ -171,8 +174,8 @@ public class PlayingScreen extends ScreenAdapter {
         batch.draw(herBoard, 17, 20);
         batch.draw(timerBoard, 550, 20);
         batch.draw(jump, buttonJump.x, buttonJump.y);
-        batch.draw(duck,buttonDuck.x,buttonDuck.y);
-        batch.draw(shoot,buttonShoot.x,buttonShoot.y);
+        batch.draw(duck, buttonDuck.x, buttonDuck.y);
+        batch.draw(shoot, buttonShoot.x, buttonShoot.y);
         drawTimer(batch, timeElapsed);
         batch.end();
         renderPlayers();
@@ -187,26 +190,60 @@ public class PlayingScreen extends ScreenAdapter {
     }
 
     private void checkCollision() {
-        for(Obstacle obstacle : obstacles) {
-            if (player1.getPlayer().overlaps(obstacle.getRectangle())){
-                game.setScreen(new MenuScreen(game));
+
+
+        for (Obstacle obstacle : obstacles) {
+
+            if (obstacle instanceof Monster) {
+                for (Rectangle bullet : bullets) {
+                    if (bullet.overlaps(obstacle.getRectangle())) {
+                        disposeWall.add(obstacle);
+                        disposeBullet.add(bullet);
+                    }
+                }
+            }
+
+
+            if (obstacle instanceof Monster) {
+
+                player1.getPlayer().x -= Gdx.graphics.getDeltaTime() * 2250;
+            }
+            if (obstacle instanceof Wall || obstacle instanceof Barrel) {
+
+                player1.getPlayer().x -= Gdx.graphics.getDeltaTime() * 250;
+            }
+
+            if (player1.getPlayer().overlaps(obstacle.getRectangle())) {
+                game.setScreen(new GameOverScreen(game, timeElapsed));
+            }
+            if (obstacle instanceof Monster) {
+
+                player1.getPlayer().x += Gdx.graphics.getDeltaTime() * 2250;
+            }
+            if (obstacle instanceof Wall || obstacle instanceof Barrel) {
+
+                player1.getPlayer().x += Gdx.graphics.getDeltaTime() * 250;
             }
         }
+
+        for (Rectangle bullet : bullets){
+            if (bullet.x >= 800) {
+                disposeBullet.add(bullet);
+            }
+        }
+
+        for (Obstacle obstacle : disposeWall) {
+            obstacles.remove(obstacle);
+        }
+        for (Rectangle bullet : disposeBullet) {
+            bullets.remove(bullet);
+        }
+
+
     }
 
     private void drawTimer(SpriteBatch batch, Float time) {
 
-        //int milliseconds = (int) (time * 1000);
-        //int seconds = (milliseconds / 1000 );
-        //int minutes = (seconds / 60) ;
-
-        //long milliseconds = TimeUnit.;
-        //long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds);
-
-        // long seconds = (milliseconds / 1000);
-        //ong seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds);
-
-        //str = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds );
 
         int minutes = (int) (time / 60);
         int seconds = (int) (time - (minutes * 60));
@@ -217,30 +254,32 @@ public class PlayingScreen extends ScreenAdapter {
             secondsString = "0" + seconds;
         }
 
-        str = minutes + ":" + secondsString + ":" + milis;
-        //str = "6:60:60";
+        String milisString = "" + milis;
+        if (milis < 10) {
+            milisString = "0" + milis;
+        }
+
+        str = minutes + ":" + secondsString + ":" + milisString;
 
         fontBit.draw(batch, str, 572, 123);
 
-        int levelTime =seconds+(minutes*60);
 
 
-        //TODO: fix this crap
+        difficulty++;
         //Launching obstacles
-        if(obstacleCounter == 0 || levelTime % (difficulty * obstacleCounter) == 0 && !used.contains(levelTime)){
-            used.add(levelTime);
-            obstacleCounter++;
-            difficulty--;
-            if (difficulty < 0) {
-                difficulty = 0;
+        if (difficulty == 1 || difficulty % level == 0) {
+
+            level-=15;
+            if( level <100) {
+                level = 100;
             }
+
+
 
             Obstacle obstacle = ObstacleFactory.createObstacle();
             obstacle.create();
 
             obstacles.add(obstacle);
-            System.out.println("Added obstacle");
-            System.out.println("wall created");
         }
     }
 
@@ -254,17 +293,19 @@ public class PlayingScreen extends ScreenAdapter {
 
     public void shootBullet() {
 
-        Bullet bullet = new Bullet();
-        System.out.println(player1.getX());
-        bullets.add(bullet.createBullet(player1.getX(),player1.getY()));
+        if (bullets.size() < 3 && (timeElapsed - lastShot > 5/10f)) {
+            lastShot = timeElapsed;
+            Bullet bullet = new Bullet();
+            bullets.add(bullet.createBullet(player1.getX(), player1.getY()));
+        }
 
     }
 
-   public void renderBullets(){
+    public void renderBullets() {
         batch.begin();
         for (Rectangle bullet : bullets) {
-            batch.draw(bulletImage,bullet.x,bullet.y);
-            bullet.x += 100 * Gdx.graphics.getDeltaTime();
+            batch.draw(bulletImage, bullet.x, bullet.y);
+            bullet.x += 300 * Gdx.graphics.getDeltaTime();
         }
         batch.end();
     }
@@ -278,7 +319,13 @@ public class PlayingScreen extends ScreenAdapter {
         for (Obstacle obstacle : obstacles) {
             batch.draw(obstacle.getImage(), obstacle.getRectangle().x, obstacle.getRectangle().y);
             obstacle.getRectangle().x -= BACKGROUND_MOVE_SPEED * Gdx.graphics.getDeltaTime();
-            if( obstacle instanceof Monster && orcCounter % 7 == 0) {
+
+            if (obstacle instanceof Wall && orcCounter % 10 == 0) {
+                Wall wall = (Wall) obstacle;
+                wall.changeImage();
+            }
+
+            if (obstacle instanceof Monster && orcCounter % 7 == 0) {
                 Monster monster = (Monster) obstacle;
                 monster.changeImage();
             }
@@ -293,16 +340,12 @@ public class PlayingScreen extends ScreenAdapter {
         HerDecision current = decision;
         if (playerController.getRectangle().overlaps(buttonJump)) {
             current = HerDecision.JUMP;
-        }
-
-        else if(playerController.getRectangle().overlaps(buttonDuck)){
-            current=HerDecision.DUCK;
-        }
-
-        else if(playerController.getRectangle().overlaps(buttonShoot)){
-            current=HerDecision.SHOOT;
+        } else if (playerController.getRectangle().overlaps(buttonDuck)) {
+            current = HerDecision.DUCK;
+        } else if (playerController.getRectangle().overlaps(buttonShoot)) {
+            current = HerDecision.SHOOT;
         } else {
-            current=HerDecision.NONE;
+            current = HerDecision.NONE;
         }
 
 
@@ -319,7 +362,7 @@ public class PlayingScreen extends ScreenAdapter {
         duck = new Texture(Gdx.files.internal("buttons/button_duck_up.png"));
         shoot = new Texture(Gdx.files.internal("buttons/button_shoot_up.png"));
 
-        if (decision == HerDecision.NONE){
+        if (decision == HerDecision.NONE) {
             return;
         } else if (decision == HerDecision.JUMP) {
             jump = new Texture(Gdx.files.internal("buttons/button_jump_down.png"));

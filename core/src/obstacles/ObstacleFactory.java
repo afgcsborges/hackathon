@@ -6,7 +6,7 @@ public class ObstacleFactory {
 
     public static Obstacle createObstacle(){
 
-        int random = 2;//(int)(Math.random() * 3);
+        int random = (int)(Math.random() * 3);
         switch (random) {
             case 0:
                 return new Wall();
