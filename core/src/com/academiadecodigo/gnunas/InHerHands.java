@@ -30,6 +30,9 @@ public class InHerHands extends Game {
     @Override
     public void create() {
         setScreen(new MenuScreen(this));
+        backgroundMusic= Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
 
     }
 
@@ -41,6 +44,7 @@ public class InHerHands extends Game {
 		player1.disposePlayer();
 		playerController.disposePlayer();
 		bullet.disposeBullet();
+		backgroundMusic.dispose();
     }
 
     public enum GameState {
