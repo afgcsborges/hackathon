@@ -51,6 +51,7 @@ public class PlayingScreen extends ScreenAdapter {
     private int difficulty = 10;
 
     private List<Integer> used;
+    private int orcCounter = 0;
 
 
     public PlayingScreen(InHerHands game) {
@@ -178,10 +179,19 @@ public class PlayingScreen extends ScreenAdapter {
         renderBullets();
         renderObstacles();
         checkDecision();
+        checkCollision();
 
         batch.begin();
         batch.draw(frame, 0, 0);
         batch.end();
+    }
+
+    private void checkCollision() {
+        for(Obstacle obstacle : obstacles) {
+            if (player1.getPlayer().overlaps(obstacle.getRectangle())){
+                game.setScreen(new MenuScreen(game));
+            }
+        }
     }
 
     private void drawTimer(SpriteBatch batch, Float time) {
@@ -263,9 +273,15 @@ public class PlayingScreen extends ScreenAdapter {
 
         batch.begin();
 
+        orcCounter++;
+
         for (Obstacle obstacle : obstacles) {
             batch.draw(obstacle.getImage(), obstacle.getRectangle().x, obstacle.getRectangle().y);
             obstacle.getRectangle().x -= BACKGROUND_MOVE_SPEED * Gdx.graphics.getDeltaTime();
+            if( obstacle instanceof Monster && orcCounter % 7 == 0) {
+                Monster monster = (Monster) obstacle;
+                monster.changeImage();
+            }
         }
 
         batch.end();
@@ -273,7 +289,7 @@ public class PlayingScreen extends ScreenAdapter {
     }
 
     private void checkDecision() {
-        //TODO: se estiver em cima de x entao decision = x
+
         HerDecision current = decision;
         if (playerController.getRectangle().overlaps(buttonJump)) {
             current = HerDecision.JUMP;
