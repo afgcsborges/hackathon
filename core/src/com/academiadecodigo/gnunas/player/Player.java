@@ -1,7 +1,9 @@
 package com.academiadecodigo.gnunas.player;
 
+import com.academiadecodigo.gnunas.screens.PlayingScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,14 +19,16 @@ public class Player extends Sprite {
     private OrthographicCamera camera;
     private boolean jumping = false;
     private boolean backToGround = false;
+    private boolean ducking = false;
+    private PlayingScreen.HerDecision decision = PlayingScreen.HerDecision.DUCK;
 
 
     public void createPlayer(){
-        playerImage = new Texture(Gdx.files.internal("player.jpg"));
+        playerImage = new Texture(Gdx.files.internal("square50.png"));
         player = new Rectangle();
         player.x = 100;
         player.y= 280 + 40;
-        player.width = 50;
+        player.width = 25;
         player.height = 50;
 
         camera= new OrthographicCamera();
@@ -37,6 +41,11 @@ public class Player extends Sprite {
 
        // camera.update();
         //batch.setProjectionMatrix(camera.combined);
+
+        if(ducking){
+            playerImage = new Texture(Gdx.files.internal("square25.png"));
+            player.height = 25;
+        }
 
         batch.begin();
         batch.draw(playerImage, player.x, player.y);
@@ -55,9 +64,32 @@ public class Player extends Sprite {
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             player.x -= 250 * Gdx.graphics.getDeltaTime();
         }
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean keyUp(int keyCode) {
+                if (keyCode == Input.Keys.SPACE) {
+                    ducking = false;
+                    playerImage = new Texture(Gdx.files.internal("square50.png"));
+                    player.height = 50;
+                }
+                return true;
+            }
+        });
+
+
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            if(!backToGround) {
-                jumping = true;
+
+            System.out.println(decision);
+
+            if (decision == PlayingScreen.HerDecision.DUCK){
+                ducking = true;
+            }
+
+            if(decision == PlayingScreen.HerDecision.JUMP) {
+                if (!backToGround) {
+                    jumping = true;
+                }
             }
         }
         if(jumping) {
@@ -88,4 +120,7 @@ public class Player extends Sprite {
 
     }
 
+    public void setDecision(PlayingScreen.HerDecision decision) {
+        this.decision = decision;
+    }
 }
