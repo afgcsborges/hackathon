@@ -1,4 +1,5 @@
-# hackathon
+# 24h - Hackathon - <Academia de Código_> final challenge!
+
 Hackathon GNUnas Edition 
 
 
